@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Book extends Model
 {
-    //
-}
-public function borrows()
-{
-      return $this->hasMany(Borrow::class);
+    public function borrows()
+    {
+        return $this->hasMany(Borrow::class);
+    }
 }
