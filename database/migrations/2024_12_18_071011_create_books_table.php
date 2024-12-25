@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('readers', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');
-        $table->date('birthday');
-        $table->string('address');
-        $table->string('phone');
-        $table->timestamps();
+        Schema::create('books', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('author');
+            $table->string('category');
+            $table->integer('public_year');
+            $table->integer('quantity');
+            $table->timestamps();
         });
-       
     }
 
     /**
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('readers');
+        Schema::dropIfExists('books');
     }
 };

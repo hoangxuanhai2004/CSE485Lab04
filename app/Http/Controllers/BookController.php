@@ -2,78 +2,73 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Models\Book;
 
 class BookController extends Controller
 {
-    // Hiển thị danh sách sách
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $books = Book::all(); // Lấy tất cả sách
-        return view('books.index', compact('books'));
+        $books = Book::orderBy("id", "desc")->paginate(10);
+        return view("books.index", ['books' => $books]);
     }
 
-    // Hiển thị form thêm mới sách
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         return view('books.create');
     }
 
-    // Lưu sách mới vào database
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        // Validate dữ liệu nhập vào
-        $request->validate([
-            'name' => 'required',
-            'author' => 'required',
-            'category' => 'required',
-            'year' => 'required|integer',
-            'quantity' => 'required|integer',
-        ]);
-
-        // Tạo sách mới
-        Book::create($request->all());
-
-        return redirect()->route('books.index')
-            ->with('success', 'Thêm sách thành công.');
+        $book = Book::create($request->all());
+        return redirect()->route('books.index')->with('success', 'Added book successfully !');
     }
 
-    // Hiển thị chi tiết một cuốn sách
-    public function show(Book $book)
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
     {
-        return view('books.show', compact('book'));
+        $book = Book::findOrFail($id);
+        return view('books.show', ['book' => $book]);
     }
 
-    // Hiển thị form chỉnh sửa sách
-    public function edit(Book $book)
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
     {
-        return view('books.edit', compact('book'));
+        $book = Book::findOrFail($id);
+        return view('books.edit', ['book' => $book]);
     }
 
-    // Cập nhật thông tin sách
-    public function update(Request $request, Book $book)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
     {
-        $request->validate([
-            'name' => 'required',
-            'author' => 'required',
-            'category' => 'required',
-            'year' => 'required|integer',
-            'quantity' => 'required|integer',
-        ]);
-
+        $book = Book::findOrFail($id);
         $book->update($request->all());
-
-        return redirect()->route('books.index')
-            ->with('success', 'Cập nhật sách thành công.');
+        return redirect()->route('books.index')->with('success', 'Updated book successfully !');
     }
 
-    // Xóa sách
-    public function destroy(Book $book)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
     {
+        $book = Book::findOrFail($id);
         $book->delete();
-
-        return redirect()->route('books.index')
-            ->with('success', 'Xóa sách thành công.');
+        return redirect()->route('books.index')->with('success', 'Deleted book successfully !');
     }
 }
